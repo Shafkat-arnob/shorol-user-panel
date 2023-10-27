@@ -6,8 +6,8 @@ import SectionHowItWork from "@/components/SectionHowItWork/SectionHowItWork";
 import SectionPromo2 from "@/components/SectionPromo2";
 import SectionSliderCategories from "@/components/SectionSliderCategories/SectionSliderCategories";
 import SectionSliderProductCard from "@/components/SectionSliderProductCard";
+import Head from "next/head";
 import { getAllProductList, getCategoryListByParentId, getNewArrivalProductList } from "./api";
-
 
 const getCategories = async () => {
   var res = await getCategoryListByParentId({categoryId:RootCategoryId});
@@ -32,6 +32,10 @@ async function PageHome () {
   
 
   return (
+    <>
+    <Head>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+    </Head>
     <div className="nc-PageHome relative overflow-hidden">
       {/* <SectionHero2 /> */}
 
@@ -116,6 +120,7 @@ async function PageHome () {
 
       </div>
     </div>
+    </>
   );
 }
 
