@@ -5,6 +5,7 @@ import * as Server from "../app/api/index";
 const useProductStore = create ((set) => ({
     list : [],
     loading : false,
+    selectedProduct: {},
     getAllList : async () => {
         try {
             set((state)=>({loading:true}));
@@ -16,6 +17,32 @@ const useProductStore = create ((set) => ({
         } 
         catch (error) {
             Swal.fire("Failed","List Fetch Failed","error");    
+        }
+    },
+    getSelectedProduct : async (id) => {
+        try {
+            set((state)=>({loading:true}));
+            var response = await Server.getProductById(id);
+            set((state)=>({
+                selectedProduct: response.data,
+                loading: false,
+            }));
+        } 
+        catch (error) {
+            Swal.fire("Failed","Product Fetch Failed","error");    
+        }
+    },
+    getProductByFilters : async (params) => {
+        try {
+            set((state)=>({loading:true}));
+            var response = await Server.getProductByCategoryAndColor(params);
+            set((state)=>({
+                list: response.data,
+                loading: false,
+            }));
+        } 
+        catch (error) {
+            Swal.fire("Failed","Product Fetch Failed","error");    
         }
     },
     // getListByParentId : async (parentId) => {

@@ -230,6 +230,20 @@ export const getAllProductList = async () => {
   });
 };
 
+export const getProductById = async (id) => {
+
+  return await instance.get(`/all/product/${id}`, {
+    params: { client_id, client_secret },
+  });
+}; 
+
+export const getProductByCategoryAndColor = async (params) => {
+
+  return await instance.get(`/all/product/get/by/category-name/color-name`, {
+    params: { client_id, client_secret,...params },
+  });
+};
+
 export const getNewArrivalProductList = async () => {
 
   return await instance.get(`/all/product/get/recent`, {

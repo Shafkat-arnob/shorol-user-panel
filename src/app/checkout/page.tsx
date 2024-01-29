@@ -4,14 +4,14 @@ import Label from "@/components/Label/Label";
 import NcInputNumber from "@/components/NcInputNumber";
 import Prices from "@/components/Prices";
 import { Product, PRODUCTS } from "@/data/data";
-import { useState } from "react";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import Input from "@/shared/Input/Input";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
 import ContactInfo from "./ContactInfo";
 import PaymentMethod from "./PaymentMethod";
 import ShippingAddress from "./ShippingAddress";
-import Image from "next/image";
-import Link from "next/link";
 
 const CheckoutPage = () => {
   const [tabActive, setTabActive] = useState<
@@ -232,8 +232,8 @@ const CheckoutPage = () => {
               Homepage
             </Link>
             <span className="text-xs mx-1 sm:mx-1.5">/</span>
-            <Link href={"/collection-2"} className="">
-              Clothing Categories
+            <Link href={"/cart"} className="">
+              Cart
             </Link>
             <span className="text-xs mx-1 sm:mx-1.5">/</span>
             <span className="underline">Checkout</span>

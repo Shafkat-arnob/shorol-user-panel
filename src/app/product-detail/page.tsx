@@ -1,43 +1,72 @@
 "use client";
 
-import React, { FC, useState } from "react";
-import ButtonPrimary from "@/shared/Button/ButtonPrimary";
-import LikeButton from "@/components/LikeButton";
-import { StarIcon } from "@heroicons/react/24/solid";
+import useProductStore from "@/Store/productStore";
+import AccordionInfo from "@/components/AccordionInfo";
 import BagIcon from "@/components/BagIcon";
-import NcInputNumber from "@/components/NcInputNumber";
-import { PRODUCTS } from "@/data/data";
-import {
-  NoSymbolIcon,
-  ClockIcon,
-  SparklesIcon,
-} from "@heroicons/react/24/outline";
 import IconDiscount from "@/components/IconDiscount";
+import LikeButton from "@/components/LikeButton";
+import NcInputNumber from "@/components/NcInputNumber";
+import NotifyAddTocart from "@/components/NotifyAddTocart";
 import Prices from "@/components/Prices";
-import toast from "react-hot-toast";
+import ReviewItem from "@/components/ReviewItem";
+import SectionPromo2 from "@/components/SectionPromo2";
 import SectionSliderProductCard from "@/components/SectionSliderProductCard";
 import detail1JPG from "@/images/products/detail1.jpg";
 import detail2JPG from "@/images/products/detail2.jpg";
 import detail3JPG from "@/images/products/detail3.jpg";
-import Policy from "./Policy";
-import ReviewItem from "@/components/ReviewItem";
+import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
-import SectionPromo2 from "@/components/SectionPromo2";
-import ModalViewAllReviews from "./ModalViewAllReviews";
-import NotifyAddTocart from "@/components/NotifyAddTocart";
+import {
+  ClockIcon,
+  NoSymbolIcon,
+  SparklesIcon,
+} from "@heroicons/react/24/outline";
+import { StarIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
-import AccordionInfo from "@/components/AccordionInfo";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { IMAGE_PREFIX } from "../api";
+import ModalViewAllReviews from "./ModalViewAllReviews";
+import Policy from "./Policy";
 
 const LIST_IMAGES_DEMO = [detail1JPG, detail2JPG, detail3JPG];
 
-const ProductDetailPage = () => {
-  const { sizes, variants, status, allOfSizes, image } = PRODUCTS[0];
+const ProductDetailPage = (props: any) => {
+  const searchParams = useSearchParams();
+  const [productId, selectedProductId] = useState(
+    searchParams.get("productId")
+  );
+  //const [product,selectedProduct] = useState();
+
+  console.log(searchParams.get("productId"));
+
+  const { getSelectedProduct, selectedProduct } = useProductStore(
+    (state) => state
+  );
+
+  const {
+    sizes,
+    variants,
+    status,
+    allOfSizes,
+    image,
+    name,
+    price,
+    description,
+    inventoryInfos,
+    mainImage,
+  } = selectedProduct;
   //
   const [variantActive, setVariantActive] = useState(0);
   const [sizeSelected, setSizeSelected] = useState(sizes ? sizes[0] : "");
   const [qualitySelected, setQualitySelected] = useState(1);
   const [isOpenModalViewAllReviews, setIsOpenModalViewAllReviews] =
     useState(false);
+
+  useEffect(() => {
+    productId && getSelectedProduct(productId);
+  }, [productId]);
 
   //
   const notifyAddTocart = () => {
@@ -56,48 +85,70 @@ const ProductDetailPage = () => {
   };
 
   const renderVariants = () => {
-    if (!variants || !variants.length) {
-      return null;
-    }
+    // if (!variants || !variants.length || !variantType) {
+    //   return null;
+    // }
 
-    return (
-      <div>
-        <label htmlFor="">
-          <span className="text-sm font-medium">
-            Color:
-            <span className="ml-1 font-semibold">
-              {variants[variantActive].name}
-            </span>
-          </span>
-        </label>
-        <div className="flex mt-3">
-          {variants.map((variant, index) => (
+    if (true) {
+      return (
+        <div className="flex space-x-1">
+          {inventoryInfos?.map((variant: any, index: any) => (
             <div
               key={index}
               onClick={() => setVariantActive(index)}
-              className={`relative flex-1 max-w-[75px] h-10 sm:h-11 rounded-full border-2 cursor-pointer ${
+              className={`relative p-2 w-6 h-6 rounded-full overflow-hidden z-10 border cursor-pointer ${
                 variantActive === index
-                  ? "border-primary-6000 dark:border-primary-500"
+                  ? `border-[${variant.color?.code}]-500`
                   : "border-transparent"
               }`}
+              title={variant.name}
+              style={{
+                borderWidth: 1,
+                borderColor:
+                  variantActive === index ? variant.color?.code : "transparent",
+              }}
             >
               <div
-                className="absolute inset-0.5 rounded-full overflow-hidden z-0 object-cover bg-cover"
-                style={{
-                  backgroundImage: `url(${
-                    // @ts-ignore
-                    typeof variant.thumbnail?.src === "string"
-                      ? // @ts-ignore
-                        variant.thumbnail?.src
-                      : typeof variant.thumbnail === "string"
-                      ? variant.thumbnail
-                      : ""
-                  })`,
-                }}
+                // className={`absolute inset-0.5 rounded-full z-0 bg-[#00bfff]`}
+                className={`absolute inset-0.5 rounded-full z-0 bg-[${variant.color?.code}]`}
+                style={{ backgroundColor: variant.color?.code }}
               ></div>
             </div>
           ))}
         </div>
+      );
+    }
+
+    return (
+      <div className="flex ">
+        {inventoryInfos?.map((variant: any, index: any) => (
+          <div
+            key={index}
+            onClick={() => setVariantActive(index)}
+            className={`relative w-11 h-6 rounded-full overflow-hidden z-10 border cursor-pointer ${
+              variantActive === index
+                ? "border-black dark:border-slate-300"
+                : "border-transparent"
+            }`}
+            title={name}
+          >
+            <div
+              className="absolute inset-0.5 rounded-full overflow-hidden z-0 bg-cover"
+              style={{
+                backgroundImage: `url(${
+                  // // @ts-ignore
+                  // typeof variant.thumbnail?.src === "string"
+                  //   ? // @ts-ignore
+                  //     variant.thumbnail?.src
+                  //   : typeof variant.thumbnail === "string"
+                  //   ? variant.thumbnail
+                  //   : ""
+                  variant.image ? variant.image?.url : mainImage.url
+                })`,
+              }}
+            ></div>
+          </div>
+        ))}
       </div>
     );
   };
@@ -203,20 +254,18 @@ const ProductDetailPage = () => {
       <div className="space-y-7 2xl:space-y-8">
         {/* ---------- 1 HEADING ----------  */}
         <div>
-          <h2 className="text-2xl sm:text-3xl font-semibold">
-            Heavy Weight Shoes
-          </h2>
+          <h2 className="text-2xl sm:text-3xl font-semibold">{name}</h2>
 
           <div className="flex items-center mt-5 space-x-4 sm:space-x-5">
             {/* <div className="flex text-xl font-semibold">$112.00</div> */}
             <Prices
               contentClass="py-1 px-2 md:py-1.5 md:px-3 text-lg font-semibold"
-              price={112}
+              price={price}
             />
 
             <div className="h-7 border-l border-slate-300 dark:border-slate-700"></div>
 
-            <div className="flex items-center">
+            {/* <div className="flex items-center">
               <a
                 href="#reviews"
                 className="flex items-center text-sm font-medium"
@@ -235,12 +284,12 @@ const ProductDetailPage = () => {
                 <SparklesIcon className="w-3.5 h-3.5" />
                 <span className="ml-1 leading-none">{status}</span>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 
         {/* ---------- 3 VARIANTS AND SIZE LIST ----------  */}
-        <div className="">{renderVariants()}</div>
+        <div className="">{inventoryInfos && renderVariants()}</div>
         <div className="">{renderSizeList()}</div>
 
         {/*  ---------- 4  QTY AND ADD TO CART BUTTON */}
@@ -265,7 +314,9 @@ const ProductDetailPage = () => {
         {/*  */}
 
         {/* ---------- 5 ----------  */}
-        <AccordionInfo />
+        <AccordionInfo
+          data={[{ name: "Product Description", content: description }]}
+        />
 
         {/* ---------- 6 ----------  */}
         <div className="hidden xl:block">
@@ -371,7 +422,11 @@ const ProductDetailPage = () => {
                 <Image
                   fill
                   sizes="(max-width: 640px) 100vw, 33vw"
-                  src={LIST_IMAGES_DEMO[0]}
+                  src={`${IMAGE_PREFIX}/${
+                    inventoryInfos?.length
+                      ? inventoryInfos[variantActive].image?.url
+                      : mainImage?.url
+                  }`}
                   className="w-full rounded-2xl object-cover"
                   alt="product detail 1"
                 />

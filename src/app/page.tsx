@@ -6,36 +6,49 @@ import SectionHowItWork from "@/components/SectionHowItWork/SectionHowItWork";
 import SectionPromo2 from "@/components/SectionPromo2";
 import SectionSliderCategories from "@/components/SectionSliderCategories/SectionSliderCategories";
 import SectionSliderProductCard from "@/components/SectionSliderProductCard";
-import Head from "next/head";
-import { getAllProductList, getCategoryListByParentId, getNewArrivalProductList } from "./api";
+import {
+  getAllProductList,
+  getCategoryListByParentId,
+  getNewArrivalProductList,
+} from "./api";
 
 const getCategories = async () => {
-  var res = await getCategoryListByParentId({categoryId:RootCategoryId});
-  return res.data;
-}
+  try {
+    var res = await getCategoryListByParentId({ categoryId: RootCategoryId });
+    return res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 const getAllProducts = async () => {
-  var res = await getAllProductList();
-  return res.data;
-}
+  try {
+    var res = await getAllProductList();
+    return res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 const getNewArrivals = async () => {
-  var res = await getNewArrivalProductList();
-  return res.data;
-}
+  try {
+    var res = await getNewArrivalProductList();
+    return res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
 
-async function PageHome () {
-
+async function PageHome() {
   const categoryList = await getCategories();
   const newArrivalList = await getNewArrivals();
-  const productList = await getAllProducts(); 
-  
+  const productList = await getAllProducts();
+
+  // const categoryList = []
+  // const newArrivalList = []
+  // const productList = []
 
   return (
-    <>
-    <Head>
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
-    </Head>
     <div className="nc-PageHome relative overflow-hidden">
       {/* <SectionHero2 /> */}
 
@@ -45,35 +58,15 @@ async function PageHome () {
         <DiscoverMoreSlider />
       </div> */}
 
-
-
       <div className="container relative space-y-24 my-24 lg:space-y-32 lg:my-32">
-
         <SectionSliderCategories categoryList={categoryList} />
 
-        {
-          newArrivalList &&
-          <SectionSliderProductCard
-          data={newArrivalList}
-        />
-        }
+        {newArrivalList && <SectionSliderProductCard data={newArrivalList} />}
 
-        {
-          productList &&
-          <SectionSliderProductCard
-          // data={[
-          //   PRODUCTS[4],
-          //   SPORT_PRODUCTS[5],
-          //   PRODUCTS[7],
-          //   SPORT_PRODUCTS[1],
-          //   PRODUCTS[6],
-          // ]}
-          heading="Products"
-          data={productList}
-        />
-        }
+        {productList && (
+          <SectionSliderProductCard heading="Products" data={productList} />
+        )}
 
-        
         {/* <SectionPromo1 /> */}
 
         <div className="relative py-24 lg:py-32">
@@ -117,10 +110,8 @@ async function PageHome () {
         <SectionClientSay /> 
         
         */}
-
       </div>
     </div>
-    </>
   );
 }
 

@@ -41,6 +41,9 @@ export interface Product {
   status?: "New in" | "limited edition" | "Sold Out" | "50% Discount";
   rating?: string;
   numberOfReviews?: number;
+  inventoryInfos?: any[];
+  variantActive?: number;
+  quantity?: number;
 }
 
 const DEMO_VARIANTS: ProductVariant[] = [

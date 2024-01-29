@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 
 export interface PricesProps {
   className?: string;
@@ -16,7 +16,7 @@ const Prices: FC<PricesProps> = ({
       <div
         className={`flex items-center border-2 border-green-500 rounded-lg ${contentClass}`}
       >
-        <span className="text-green-500 !leading-none">${String(price)}</span>
+        <span className="text-green-500 !leading-none">{String(price)}</span>
       </div>
     </div>
   );

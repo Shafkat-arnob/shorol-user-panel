@@ -12,6 +12,7 @@ export interface CardCategory2Props {
   featuredImage?: string | StaticImageData;
   name: string;
   desc: string;
+  id: number;
 }
 
 const CardCategory2: FC<CardCategory2Props> = ({
@@ -21,10 +22,11 @@ const CardCategory2: FC<CardCategory2Props> = ({
   featuredImage = "N2ZOD2945Z41CM6JAVTX6F70PDZ5G4EAU98V9ABF23YR8RXPNRMYTSRPX6M192YA5BQL0N5O9PBTVJP9X3CWUA5HBNYEBNPGP94Vpc_ver_1.png",
   name="",
   desc="",
+  id=null,
 }) => {
   return (
     <Link
-      href={"/collection"}
+      href={{pathname:"/collection",query:{categoryName:name,categoryId:id}}}
       className={`nc-CardCategory2 ${className}`}
       data-nc-id="CardCategory2"
     >

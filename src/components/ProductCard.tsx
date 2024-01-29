@@ -34,7 +34,7 @@ const ProductCard: FC<ProductCardProps> = ({
     name,
     price,
     description,
-    inventoryInfos=[],
+    inventoryInfos = [],
     mainImage,
     sizes,
     variants,
@@ -51,6 +51,12 @@ const ProductCard: FC<ProductCardProps> = ({
   const router = useRouter();
 
   const notifyAddTocart = ({ size }: { size?: string }) => {
+    const cartListString = sessionStorage.getItem("cartList");
+    const prevCartList = cartListString ? JSON.parse(cartListString) : [];
+    sessionStorage.setItem(
+      "cartList",
+      JSON.stringify([...prevCartList, { ...data, variantActive, quantity: 1 }])
+    );
     toast.custom(
       (t) => (
         <Transition
@@ -77,6 +83,7 @@ const ProductCard: FC<ProductCardProps> = ({
         duration: 3000,
       }
     );
+    console.log(sessionStorage.getItem("cartList"));
   };
 
   const renderProductCartOnNotify = ({ size }: { size?: string }) => {
@@ -86,7 +93,7 @@ const ProductCard: FC<ProductCardProps> = ({
           <Image
             width={80}
             height={96}
-            src={image}
+            src={getImageUrl(inventoryInfos[variantActive]?.image?.url)}
             alt={name}
             className="absolute object-cover object-center"
           />
@@ -105,7 +112,10 @@ const ProductCard: FC<ProductCardProps> = ({
                   <span>{size || "XL"}</span>
                 </p>
               </div>
-              <Prices price={price} className="mt-0.5" />
+              <Prices
+                price={inventoryInfos[variantActive].price}
+                className="mt-0.5"
+              />
             </div>
           </div>
           <div className="flex flex-1 items-end justify-between text-sm">
@@ -130,7 +140,7 @@ const ProductCard: FC<ProductCardProps> = ({
   };
 
   const getBorderClass = (Bgclass = "") => {
-    console.log("BGclass ------>",Bgclass);
+    console.log("BGclass ------>", Bgclass);
     // if (Bgclass.includes("red")) {
     //   return "border-red-500";
     // }
@@ -157,84 +167,32 @@ const ProductCard: FC<ProductCardProps> = ({
   };
 
   const renderVariants = () => {
-    // if (!variants || !variants.length || !variantType) {
-    //   return null;
-    // }
-
-    if (true) {
-      return (
-        <div className="flex space-x-1">
-          <div
-              className="absolute inset-0.5 rounded-full overflow-hidden z-0 bg-cover"
-              style={{
-                backgroundImage: `url(${
-                  // // @ts-ignore
-                  // typeof variant.thumbnail?.src === "string"
-                  //   ? // @ts-ignore
-                  //     variant.thumbnail?.src
-                  //   : typeof variant.thumbnail === "string"
-                  //   ? variant.thumbnail
-                  //   : ""
-                  inventoryInfos[variantActive]?.image?
-                  inventoryInfos[variantActive].image?.url
-                  :
-                  mainImage?.url
-                })`,
-              }}
-            ></div>
-          {inventoryInfos?.map((variant:any, index:any) => (
-            <div
-              key={index}
-              onClick={() => setVariantActive(index)}
-              className={`relative p-2 w-6 h-6 rounded-full overflow-hidden z-10 border cursor-pointer ${
-                variantActive === index
-                  ? getBorderClass(variant.color?.code)
-                  : "border-transparent"
-              }`}
-              title={variant.name}
-              style={{borderWidth:1,borderColor:variantActive===index?variant.color?.code:'transparent'}}
-            >
-              <div
-               // className={`absolute inset-0.5 rounded-full z-0 bg-[#00bfff]`}
-              className={`absolute inset-0.5 rounded-full z-0 bg-[${variant.color?.code}]`}
-              style={{backgroundColor:variant.color?.code}}
-              ></div>
-            </div>                                        
-          ))}
-        </div>
-      );
+    if (!inventoryInfos || !inventoryInfos.length) {
+      return null;
     }
 
     return (
-      <div className="flex ">
-        {inventoryInfos?.map((variant:any, index:any) => (
+      <div className="flex space-x-1">
+        {inventoryInfos?.map((variant: any, index: any) => (
           <div
             key={index}
             onClick={() => setVariantActive(index)}
-            className={`relative w-11 h-6 rounded-full overflow-hidden z-10 border cursor-pointer ${
+            className={`relative p-2 w-6 h-6 rounded-full overflow-hidden z-10 border cursor-pointer ${
               variantActive === index
-                ? "border-black dark:border-slate-300"
+                ? getBorderClass(variant.color?.code)
                 : "border-transparent"
             }`}
-            title={name}
+            title={variant.name}
+            style={{
+              borderWidth: 1,
+              borderColor:
+                variantActive === index ? variant.color?.code : "transparent",
+            }}
           >
             <div
-              className="absolute inset-0.5 rounded-full overflow-hidden z-0 bg-cover"
-              style={{
-                backgroundImage: `url(${
-                  // // @ts-ignore
-                  // typeof variant.thumbnail?.src === "string"
-                  //   ? // @ts-ignore
-                  //     variant.thumbnail?.src
-                  //   : typeof variant.thumbnail === "string"
-                  //   ? variant.thumbnail
-                  //   : ""
-                  variant.image?
-                  variant.image?.url
-                  :
-                  mainImage.url
-                })`,
-              }}
+              // className={`absolute inset-0.5 rounded-full z-0 bg-[#00bfff]`}
+              className={`absolute inset-0.5 rounded-full z-0 bg-[${variant.color?.code}]`}
+              style={{ backgroundColor: variant.color?.code }}
             ></div>
           </div>
         ))}
@@ -242,7 +200,7 @@ const ProductCard: FC<ProductCardProps> = ({
     );
   };
 
-  const renderGroupButtons = () => {
+  const RenderGroupButtons = () => {
     return (
       <div className="absolute bottom-0 group-hover:bottom-4 inset-x-1 flex justify-center opacity-0 group-hover:opacity-100 group-hover:visible transition-all invisible">
         <ButtonPrimary
@@ -274,7 +232,7 @@ const ProductCard: FC<ProductCardProps> = ({
 
     return (
       <div className="absolute bottom-0 inset-x-1 space-x-1.5 rtl:space-x-reverse flex justify-center opacity-0 invisible group-hover:bottom-4 group-hover:opacity-100 group-hover:visible transition-all">
-        {sizes.map((size:any, index:number) => {
+        {sizes.map((size: any, index: number) => {
           return (
             <div
               key={index}
@@ -294,15 +252,19 @@ const ProductCard: FC<ProductCardProps> = ({
       <div
         className={`nc-ProductCard relative flex flex-col bg-transparent ${className}`}
       >
-        <Link href={"/product-detail"} className="absolute inset-0"></Link>
+        {/* <Link href={"/product-detail"} className="absolute inset-0"></Link> */}
 
         <div className="relative flex-shrink-0 bg-slate-50 dark:bg-slate-300 rounded-3xl overflow-hidden group">
-          <Link href={"/product-detail"} 
-          className="block"
+          <Link
+            href={{
+              pathname: "/product-detail-2",
+              query: { productId: data.id },
+            }}
+            className="block bg-black "
           >
             <NcImage
               src={getImageUrl(inventoryInfos[variantActive]?.image?.url)}
-              containerClassName="flex aspect-w-12 aspect-h-12 w-full h-0"
+              containerClassName="flex aspect-w-12 aspect-h-12 w-full h-full"
               //className="object-cover w-full h-full drop-shadow-xl"
               alt="product"
               //containerClassName="flex aspect-w-12 aspect-h-0 w-full h-full"
@@ -312,12 +274,13 @@ const ProductCard: FC<ProductCardProps> = ({
           </Link>
           <ProductStatus status={status} />
           <LikeButton liked={isLiked} className="absolute top-3 end-3 z-10" />
-          {sizes ? renderSizeList() : renderGroupButtons()}
+          <RenderGroupButtons />
         </div>
 
         <div className="space-y-4 px-2.5 pt-5 pb-2.5">
           {renderVariants()}
-          <div>
+
+          <div className="">
             <h2 className="nc-ProductCard__title text-base font-semibold transition-colors">
               {name}
             </h2>
@@ -327,7 +290,13 @@ const ProductCard: FC<ProductCardProps> = ({
           </div>
 
           <div className="flex justify-between items-end ">
-            <Prices price={inventoryInfos[variantActive]?.price?inventoryInfos[variantActive]?.price:price} />
+            <Prices
+              price={
+                inventoryInfos[variantActive]?.price
+                  ? inventoryInfos[variantActive]?.price
+                  : price
+              }
+            />
             <div className="flex items-center mb-0.5">
               <StarIcon className="w-5 h-5 pb-[1px] text-amber-400" />
               <span className="text-sm ms-1 text-slate-500 dark:text-slate-400">

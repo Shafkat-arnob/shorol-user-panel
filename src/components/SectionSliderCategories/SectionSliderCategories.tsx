@@ -54,14 +54,14 @@ export interface SectionSliderCategoriesProps {
   heading?: string;
   subHeading?: string;
   data?: CardCategoryData[];
-  categoryList? :listProps[];
+  categoryList?: listProps[];
 }
 
 export interface listProps {
-  name? : string | null,
-  description? : string | null,
-  image? : object | null,
-  icon? : object | null
+  name?: string | null;
+  description?: string | null;
+  image?: object | null;
+  icon?: object | null;
 }
 
 const SectionSliderCategories: FC<SectionSliderCategoriesProps> = ({
@@ -70,16 +70,18 @@ const SectionSliderCategories: FC<SectionSliderCategoriesProps> = ({
   className = "",
   itemClassName = "",
   data = [],
-  categoryList = []
+  categoryList = [],
 }) => {
   const sliderRef = useRef(null);
   const [isShow, setIsShow] = useState(false);
 
-  const getListByParentId = useCategoryStore((state)=>state.getListByParentId);
-  const loading = useCategoryStore((state)=>state.loading);
-  data = useCategoryStore((state)=>state.list);
+  const getListByParentId = useCategoryStore(
+    (state) => state.getListByParentId
+  );
+  const loading = useCategoryStore((state) => state.loading);
+  data = useCategoryStore((state) => state.list);
 
-  const [list,setList] = useState([]);
+  const [list, setList] = useState([]);
 
   useEffect(() => {
     const OPTIONS: Partial<Glide.Options> = {
@@ -123,19 +125,21 @@ const SectionSliderCategories: FC<SectionSliderCategoriesProps> = ({
   //   getListByParentId(RootCategoryId);
   // },[]);
 
-  useEffect(()=>{
+  useEffect(() => {
     getList();
-  },[]);
+  }, []);
 
   const getList = async () => {
     try {
-      const response = await getCategoryListByParentId({categoryId:RootCategoryId});
+      const response = await getCategoryListByParentId({
+        categoryId: RootCategoryId,
+      });
       setList(response.data);
       console.log(response.data);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   return (
     <div className={`nc-SectionSliderCategories ${className}`}>
@@ -145,12 +149,13 @@ const SectionSliderCategories: FC<SectionSliderCategoriesProps> = ({
         </Heading>
         <div className="glide__track" data-glide-el="track">
           <ul className="glide__slides">
-            {categoryList.map((item:any, index:number) => (
+            {categoryList.map((item: any, index: number) => (
               <li key={index} className={`glide__slide ${itemClassName}`}>
                 <CardCategory2
                   featuredImage={item.image?.url}
                   name={item.name}
                   desc={item.description}
+                  id={item.id}
                 />
               </li>
             ))}
@@ -194,7 +199,7 @@ const SectionSliderCategories: FC<SectionSliderCategoriesProps> = ({
                   </div>
                 </div>
                 <Link
-                  href={"/collection"}
+                  href={{pathname:"/collection"}}
                   className="opacity-0 group-hover:opacity-100 absolute inset-0 bg-black bg-opacity-10 transition-opacity"
                 ></Link>
               </div>

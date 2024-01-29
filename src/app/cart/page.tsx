@@ -1,12 +1,38 @@
-import { NoSymbolIcon, CheckIcon } from "@heroicons/react/24/outline";
+"use client";
 import NcInputNumber from "@/components/NcInputNumber";
 import Prices from "@/components/Prices";
-import { Product, PRODUCTS } from "@/data/data";
+import { Product } from "@/data/data";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
+import { CheckIcon, NoSymbolIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getImageUrl } from "../api";
 
 const CartPage = () => {
+  const cartListString = sessionStorage.getItem("cartList");
+  const [cartList, setCartList] = useState(
+    cartListString ? JSON.parse(cartListString) : []
+  );
+  const [subtotal, setSubtotal] = useState(0);
+  const [deliveryFee, setDeliveryFee] = useState(60);
+
+  console.log(cartList);
+
+  const calculateTotal = () => {
+    let total = 0;
+    cartList.map(
+      (item: Product, index: number) =>
+        (total +=
+          (item?.inventoryInfos[item.variantActive]?.price * item.quantity) | 0)
+    );
+    setSubtotal(total);
+  };
+
+  useEffect(() => {
+    calculateTotal();
+  }, [cartList]);
+
   const renderStatusSoldout = () => {
     return (
       <div className="rounded-full flex items-center justify-center px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
@@ -26,7 +52,9 @@ const CartPage = () => {
   };
 
   const renderProduct = (item: Product, index: number) => {
-    const { image, price, name } = item;
+    const { image, price, name, variantActive } = item;
+
+    const chosenVariant = item?.inventoryInfos[variantActive];
 
     return (
       <div
@@ -36,7 +64,7 @@ const CartPage = () => {
         <div className="relative h-36 w-24 sm:w-32 flex-shrink-0 overflow-hidden rounded-xl bg-slate-100">
           <Image
             fill
-            src={image}
+            src={getImageUrl(chosenVariant?.image?.url)}
             alt={name}
             sizes="300px"
             className="h-full w-full object-contain object-center"
@@ -95,10 +123,13 @@ const CartPage = () => {
                       />
                     </svg>
 
-                    <span>{`Black`}</span>
+                    <span>{chosenVariant?.color?.name}</span>
                   </div>
+
                   <span className="mx-4 border-l border-slate-200 dark:border-slate-700 "></span>
-                  <div className="flex items-center space-x-1.5">
+
+                  {/* Size sect */}
+                  {/* <div className="flex items-center space-x-1.5">
                     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
                       <path
                         d="M21 9V3H15"
@@ -131,7 +162,7 @@ const CartPage = () => {
                     </svg>
 
                     <span>{`2XL`}</span>
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="mt-3 flex justify-between w-full sm:hidden relative">
@@ -150,17 +181,24 @@ const CartPage = () => {
                   </select>
                   <Prices
                     contentClass="py-1 px-2 md:py-1.5 md:px-2.5 text-sm font-medium h-full"
-                    price={price}
+                    price={chosenVariant?.price}
                   />
                 </div>
               </div>
 
               <div className="hidden sm:block text-center relative">
-                <NcInputNumber className="relative z-10" />
+                <NcInputNumber
+                  className="relative z-10"
+                  max={chosenVariant.numberOfProducts}
+                  onChange={(e) => {
+                    item.quantity = e;
+                    calculateTotal();
+                  }}
+                />
               </div>
 
               <div className="hidden flex-1 sm:flex justify-end">
-                <Prices price={price} className="mt-0.5" />
+                <Prices price={chosenVariant?.price | 0} className="mt-0.5" />
               </div>
             </div>
           </div>
@@ -173,6 +211,11 @@ const CartPage = () => {
             <a
               href="##"
               className="relative z-10 flex items-center mt-3 font-medium text-primary-6000 hover:text-primary-500 text-sm "
+              onClick={() => {
+                const temp = [...cartList];
+                temp.splice(index, 1);
+                setCartList(temp);
+              }}
             >
               <span>Remove</span>
             </a>
@@ -189,7 +232,7 @@ const CartPage = () => {
           <h2 className="block text-2xl sm:text-3xl lg:text-4xl font-semibold ">
             Shopping Cart
           </h2>
-          <div className="block mt-3 sm:mt-5 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-400">
+          {/* <div className="block mt-3 sm:mt-5 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-400">
             <Link href={"/"} className="">
               Homepage
             </Link>
@@ -199,106 +242,96 @@ const CartPage = () => {
             </Link>
             <span className="text-xs mx-1 sm:mx-1.5">/</span>
             <span className="underline">Shopping Cart</span>
-          </div>
+          </div> */}
         </div>
 
         <hr className="border-slate-200 dark:border-slate-700 my-10 xl:my-12" />
 
         <div className="flex flex-col lg:flex-row">
           <div className="w-full lg:w-[60%] xl:w-[55%] divide-y divide-slate-200 dark:divide-slate-700 ">
-            {[
-              PRODUCTS[0],
-              PRODUCTS[1],
-              PRODUCTS[2],
-              PRODUCTS[3],
-              PRODUCTS[4],
-            ].map(renderProduct)}
+            {cartList.map(renderProduct)}
           </div>
           <div className="border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-slate-700 my-10 lg:my-0 lg:mx-10 xl:mx-16 2xl:mx-20 flex-shrink-0"></div>
-          <div className="flex-1">
-            <div className="sticky top-28">
-              <h3 className="text-lg font-semibold ">Order Summary</h3>
-              <div className="mt-7 text-sm text-slate-500 dark:text-slate-400 divide-y divide-slate-200/70 dark:divide-slate-700/80">
-                <div className="flex justify-between pb-4">
-                  <span>Subtotal</span>
-                  <span className="font-semibold text-slate-900 dark:text-slate-200">
-                    $249.00
-                  </span>
+          {subtotal > 0 && (
+            <div className="flex-1">
+              <div className="sticky top-28">
+                <h3 className="text-lg font-semibold ">Order Summary</h3>
+                <div className="mt-7 text-sm text-slate-500 dark:text-slate-400 divide-y divide-slate-200/70 dark:divide-slate-700/80">
+                  <div className="flex justify-between pb-4">
+                    <span>Subtotal</span>
+                    <span className="font-semibold text-slate-900 dark:text-slate-200">
+                      {subtotal} TK.
+                    </span>
+                  </div>
+                  {/* <div className="flex justify-between py-4">
+                    <span>Delivery Fee</span>
+                    <span className="font-semibold text-slate-900 dark:text-slate-200">
+                      {deliveryFee} TK.
+                    </span>
+                  </div> */}
+                  <div className="flex justify-between font-semibold text-slate-900 dark:text-slate-200 text-base pt-4">
+                    <span>Order total</span>
+                    <span>{subtotal} TK.</span>
+                  </div>
                 </div>
-                <div className="flex justify-between py-4">
-                  <span>Shpping estimate</span>
-                  <span className="font-semibold text-slate-900 dark:text-slate-200">
-                    $5.00
-                  </span>
+                <ButtonPrimary href="/checkout" className="mt-8 w-full">
+                  Checkout
+                </ButtonPrimary>
+                <div className="mt-5 text-sm text-slate-500 dark:text-slate-400 flex items-center justify-center">
+                  <p className="block relative pl-5">
+                    <svg
+                      className="w-4 h-4 absolute -left-1 top-0.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <path
+                        d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M12 8V13"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M11.9945 16H12.0035"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    Learn more{` `}
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href="##"
+                      className="text-slate-900 dark:text-slate-200 underline font-medium"
+                    >
+                      Taxes
+                    </a>
+                    <span>
+                      {` `}and{` `}
+                    </span>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href="##"
+                      className="text-slate-900 dark:text-slate-200 underline font-medium"
+                    >
+                      Shipping
+                    </a>
+                    {` `} infomation
+                  </p>
                 </div>
-                <div className="flex justify-between py-4">
-                  <span>Tax estimate</span>
-                  <span className="font-semibold text-slate-900 dark:text-slate-200">
-                    $24.90
-                  </span>
-                </div>
-                <div className="flex justify-between font-semibold text-slate-900 dark:text-slate-200 text-base pt-4">
-                  <span>Order total</span>
-                  <span>$276.00</span>
-                </div>
-              </div>
-              <ButtonPrimary href="/checkout" className="mt-8 w-full">
-                Checkout
-              </ButtonPrimary>
-              <div className="mt-5 text-sm text-slate-500 dark:text-slate-400 flex items-center justify-center">
-                <p className="block relative pl-5">
-                  <svg
-                    className="w-4 h-4 absolute -left-1 top-0.5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <path
-                      d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M12 8V13"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M11.9945 16H12.0035"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  Learn more{` `}
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href="##"
-                    className="text-slate-900 dark:text-slate-200 underline font-medium"
-                  >
-                    Taxes
-                  </a>
-                  <span>
-                    {` `}and{` `}
-                  </span>
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href="##"
-                    className="text-slate-900 dark:text-slate-200 underline font-medium"
-                  >
-                    Shipping
-                  </a>
-                  {` `} infomation
-                </p>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </main>
     </div>

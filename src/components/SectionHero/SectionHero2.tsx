@@ -26,6 +26,8 @@ const SectionHero2: FC<SectionHero2Props> = ({ className = "" }) => {
   const loading = useSliderStore((state)=>state.loading);
   const list = useSliderStore((state)=>state.list);
 
+  // const {getAllList,loading,list} = useSliderStore((state)=> state);
+
   useEffect(()=>{
     getAllList();    
   },[]);

@@ -1,35 +1,36 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-  NoSymbolIcon,
-  ClockIcon,
-  SparklesIcon,
-} from "@heroicons/react/24/outline";
-import ButtonPrimary from "@/shared/Button/ButtonPrimary";
-import ButtonSecondary from "@/shared/Button/ButtonSecondary";
-import NcImage from "@/shared/NcImage/NcImage";
+import useProductStore from "@/Store/productStore";
+import AccordionInfo from "@/components/AccordionInfo";
+import BagIcon from "@/components/BagIcon";
+import IconDiscount from "@/components/IconDiscount";
+import LikeSaveBtns from "@/components/LikeSaveBtns";
+import NcInputNumber from "@/components/NcInputNumber";
+import NotifyAddTocart from "@/components/NotifyAddTocart";
 import ReviewItem from "@/components/ReviewItem";
+import SectionSliderProductCard from "@/components/SectionSliderProductCard";
+import ListingImageGallery from "@/components/listing-image-gallery/ListingImageGallery";
 import detail21JPG from "@/images/products/detail3-1.webp";
 import detail22JPG from "@/images/products/detail3-2.webp";
 import detail23JPG from "@/images/products/detail3-3.webp";
 import detail24JPG from "@/images/products/detail3-4.webp";
-import { PRODUCTS } from "@/data/data";
-import IconDiscount from "@/components/IconDiscount";
-import NcInputNumber from "@/components/NcInputNumber";
-import BagIcon from "@/components/BagIcon";
-import toast from "react-hot-toast";
+import ButtonPrimary from "@/shared/Button/ButtonPrimary";
+import ButtonSecondary from "@/shared/Button/ButtonSecondary";
+import NcImage from "@/shared/NcImage/NcImage";
+import {
+  ClockIcon,
+  NoSymbolIcon,
+  SparklesIcon,
+} from "@heroicons/react/24/outline";
 import { StarIcon } from "@heroicons/react/24/solid";
-import SectionSliderProductCard from "@/components/SectionSliderProductCard";
-import NotifyAddTocart from "@/components/NotifyAddTocart";
-import Image, { StaticImageData } from "next/image";
-import LikeSaveBtns from "@/components/LikeSaveBtns";
-import AccordionInfo from "@/components/AccordionInfo";
-import Policy from "../product-detail/Policy";
-import ModalViewAllReviews from "../product-detail/ModalViewAllReviews";
-import ListingImageGallery from "@/components/listing-image-gallery/ListingImageGallery";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Route } from "next";
+import { StaticImageData } from "next/image";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { IMAGE_PREFIX } from "../api";
+import ModalViewAllReviews from "../product-detail/ModalViewAllReviews";
+import Policy from "../product-detail/Policy";
 
 const LIST_IMAGES_GALLERY_DEMO: (string | StaticImageData)[] = [
   detail21JPG,
@@ -46,8 +47,24 @@ const LIST_IMAGES_GALLERY_DEMO: (string | StaticImageData)[] = [
 ];
 const PRICE = 108;
 
-const ProductDetailPage2 = ({}) => {
-  const { sizes, variants, status, allOfSizes, image } = PRODUCTS[0];
+const ProductDetailPage2 = (props: any) => {
+  //const { sizes, variants, status, allOfSizes, image } = PRODUCTS[0];
+  const { getSelectedProduct, selectedProduct } = useProductStore(
+    (state) => state
+  );
+
+  const {
+    sizes,
+    variants,
+    status,
+    allOfSizes,
+    image,
+    name,
+    price,
+    description,
+    inventoryInfos,
+    mainImage,
+  } = selectedProduct;
   //
   const router = useRouter();
   const thisPathname = usePathname();
@@ -59,6 +76,14 @@ const ProductDetailPage2 = ({}) => {
   const [qualitySelected, setQualitySelected] = useState(1);
   const [isOpenModalViewAllReviews, setIsOpenModalViewAllReviews] =
     useState(false);
+
+  const [productId, selectedProductId] = useState(
+    searchParams.get("productId")
+  );
+
+  useEffect(() => {
+    productId && getSelectedProduct(productId);
+  }, [productId]);
 
   //
   const handleCloseModalImageGallery = () => {
@@ -72,48 +97,34 @@ const ProductDetailPage2 = ({}) => {
 
   //
   const renderVariants = () => {
-    if (!variants || !variants.length) {
+    if (!inventoryInfos || !inventoryInfos.length) {
       return null;
     }
-
     return (
-      <div>
-        <label htmlFor="">
-          <span className="text-sm font-medium">
-            Color:
-            <span className="ml-1 font-semibold">
-              {variants[variantActive].name}
-            </span>
-          </span>
-        </label>
-        <div className="flex mt-3">
-          {variants.map((variant, index) => (
+      <div className="flex space-x-1">
+        {inventoryInfos?.map((variant: any, index: any) => (
+          <div
+            key={index}
+            onClick={() => setVariantActive(index)}
+            className={`relative p-2 w-6 h-6 rounded-full overflow-hidden z-10 border cursor-pointer ${
+              variantActive === index
+                ? `border-[${variant.color?.code}]-500`
+                : "border-transparent"
+            }`}
+            title={variant.name}
+            style={{
+              borderWidth: 1,
+              borderColor:
+                variantActive === index ? variant.color?.code : "transparent",
+            }}
+          >
             <div
-              key={index}
-              onClick={() => setVariantActive(index)}
-              className={`relative flex-1 max-w-[75px] h-10 sm:h-11 rounded-full border-2 cursor-pointer ${
-                variantActive === index
-                  ? "border-primary-6000 dark:border-primary-500"
-                  : "border-transparent"
-              }`}
-            >
-              <div
-                className="absolute inset-0.5 rounded-full overflow-hidden z-0 bg-cover"
-                style={{
-                  backgroundImage: `url(${
-                    // @ts-ignore
-                    typeof variant.thumbnail?.src === "string"
-                      ? // @ts-ignore
-                        variant.thumbnail?.src
-                      : typeof variant.thumbnail === "string"
-                      ? variant.thumbnail
-                      : ""
-                  })`,
-                }}
-              ></div>
-            </div>
-          ))}
-        </div>
+              // className={`absolute inset-0.5 rounded-full z-0 bg-[#00bfff]`}
+              className={`absolute inset-0.5 rounded-full z-0 bg-[${variant.color?.code}]`}
+              style={{ backgroundColor: variant.color?.code }}
+            ></div>
+          </div>
+        ))}
       </div>
     );
   };
@@ -237,9 +248,7 @@ const ProductDetailPage2 = ({}) => {
           <div className="">
             {/* ---------- 1 HEADING ----------  */}
             <div className="flex items-center justify-between space-x-5">
-              <div className="flex text-2xl font-semibold">
-                ${PRICE.toFixed(2)}
-              </div>
+              <div className="flex text-2xl font-semibold">${price}</div>
 
               <a
                 href="#reviews"
@@ -286,22 +295,22 @@ const ProductDetailPage2 = ({}) => {
             <div className="space-y-2.5">
               <div className="flex justify-between text-slate-600 dark:text-slate-300">
                 <span className="flex">
-                  <span>{`$${PRICE.toFixed(2)}  `}</span>
+                  <span>{`${price}`}</span>
                   <span className="mx-2">x</span>
                   <span>{`${qualitySelected} `}</span>
                 </span>
 
-                <span>{`$${(PRICE * qualitySelected).toFixed(2)}`}</span>
+                <span>{`$${price * qualitySelected}`}</span>
               </div>
-              <div className="flex justify-between text-slate-600 dark:text-slate-300">
+              {/* <div className="flex justify-between text-slate-600 dark:text-slate-300">
                 <span>Tax estimate</span>
                 <span>$0</span>
-              </div>
+              </div> */}
             </div>
             <div className="border-b border-slate-200 dark:border-slate-700"></div>
             <div className="flex justify-between font-semibold">
               <span>Total</span>
-              <span>{`$${(PRICE * qualitySelected).toFixed(2)}`}</span>
+              <span>{`$${price * qualitySelected}`}</span>
             </div>
           </div>
         </div>
@@ -313,9 +322,7 @@ const ProductDetailPage2 = ({}) => {
     return (
       <div className="listingSection__wrap !space-y-6">
         <div>
-          <h2 className="text-2xl md:text-3xl font-semibold">
-            Heavy Weight Hoodie
-          </h2>
+          <h2 className="text-2xl md:text-3xl font-semibold">{name}</h2>
           <div className="flex items-center mt-4 sm:mt-5">
             <a
               href="#reviews"
@@ -346,7 +353,9 @@ const ProductDetailPage2 = ({}) => {
         {/*  */}
         <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
         {/*  */}
-        <AccordionInfo panelClassName="p-4 pt-3.5 text-slate-600 text-base dark:text-slate-300 leading-7" />
+        <AccordionInfo
+          data={[{ name: "Product Description", content: description }]}
+        />
       </div>
     );
   };
@@ -451,7 +460,11 @@ const ProductDetailPage2 = ({}) => {
                   alt="firt"
                   containerClassName="aspect-w-3 aspect-h-4 relative md:aspect-none md:absolute md:inset-0"
                   className="object-cover rounded-md sm:rounded-xl"
-                  src={LIST_IMAGES_GALLERY_DEMO[0]}
+                  src={`${IMAGE_PREFIX}/${
+                    inventoryInfos?.length
+                      ? inventoryInfos[variantActive].image?.url
+                      : mainImage?.url
+                  }`}
                   fill
                   sizes="(max-width: 640px) 100vw, 50vw"
                   priority

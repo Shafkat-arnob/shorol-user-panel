@@ -1,23 +1,49 @@
 "use client";
 
+import { getImageUrl } from "@/app/api";
 import { Popover, Transition } from "@/app/headlessui";
 import Prices from "@/components/Prices";
-import { Product, PRODUCTS } from "@/data/data";
-import { Fragment } from "react";
+import { Product } from "@/data/data";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
 import Image from "next/image";
 import Link from "next/link";
+import { Fragment, useEffect, useState } from "react";
 
 export default function CartDropdown() {
+  const cartListString = sessionStorage.getItem("cartList");
+  const [cartList, setCartList] = useState(
+    cartListString ? JSON.parse(cartListString) : []
+  );
+  const [subtotal, setSubtotal] = useState(0);
+
+  console.log(cartList);
+
+  const calculateTotal = () => {
+    let total = 0;
+    cartList.map(
+      (item: Product, index: number) =>
+        (total +=
+          (item?.inventoryInfos[item.variantActive]?.price * item.quantity) | 0)
+    );
+    setSubtotal(total);
+  };
+
+  useEffect(() => {
+    calculateTotal();
+  }, [cartList]);
+
   const renderProduct = (item: Product, index: number, close: () => void) => {
-    const { name, price, image } = item;
+    const { image, price, name, variantActive } = item;
+
+    const chosenVariant = item?.inventoryInfos[variantActive];
+
     return (
       <div key={index} className="flex py-5 last:pb-0">
         <div className="relative h-24 w-20 flex-shrink-0 overflow-hidden rounded-xl bg-slate-100">
           <Image
             fill
-            src={image}
+            src={getImageUrl(chosenVariant?.image?.url)}
             alt={name}
             className="h-full w-full object-contain object-center"
           />
@@ -43,7 +69,7 @@ export default function CartDropdown() {
                   <span>{"XL"}</span>
                 </p>
               </div>
-              <Prices price={price} className="mt-0.5" />
+              <Prices price={chosenVariant?.price | 0} className="mt-0.5" />
             </div>
           </div>
           <div className="flex flex-1 items-end justify-between text-sm">
@@ -53,6 +79,11 @@ export default function CartDropdown() {
               <button
                 type="button"
                 className="font-medium text-primary-6000 dark:text-primary-500 "
+                onClick={() => {
+                  const temp = [...cartList];
+                  temp.splice(index, 1);
+                  setCartList(temp);
+                }}
               >
                 Remove
               </button>
@@ -132,8 +163,8 @@ export default function CartDropdown() {
                   <div className="max-h-[60vh] p-5 overflow-y-auto hiddenScrollbar">
                     <h3 className="text-xl font-semibold">Shopping cart</h3>
                     <div className="divide-y divide-slate-100 dark:divide-slate-700">
-                      {[PRODUCTS[0], PRODUCTS[1], PRODUCTS[2]].map(
-                        (item, index) => renderProduct(item, index, close)
+                      {cartList.map((item: any, index: number) =>
+                        renderProduct(item, index, close)
                       )}
                     </div>
                   </div>
@@ -145,7 +176,7 @@ export default function CartDropdown() {
                           Shipping and taxes calculated at checkout.
                         </span>
                       </span>
-                      <span className="">$299.00</span>
+                      <span className="">{subtotal} TK.</span>
                     </p>
                     <div className="flex space-x-2 mt-5">
                       <ButtonSecondary
