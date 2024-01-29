@@ -176,7 +176,7 @@ const ProductDetailPage = (props: any) => {
           </a>
         </div>
         <div className="grid grid-cols-5 sm:grid-cols-7 gap-2 mt-3">
-          {allOfSizes.map((size, index) => {
+          {allOfSizes.map((size: any, index: number) => {
             const isActive = size === sizeSelected;
             const sizeOutStock = !sizes.includes(size);
             return (
