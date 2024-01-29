@@ -7,8 +7,8 @@ import createAuthRefreshInterceptor from 'axios-auth-refresh';
 // https://thingproxy.freeboard.io/fetch/ https://cors-anywhere.herokuapp.com/
 
 
-const BASE_URL = 'http://146.190.110.177:8080/api';
-const BASE_URL_LOGIN = 'http://146.190.110.177:8080/api';
+const BASE_URL = 'https://rest.deoxysworkshop.com/api';
+const BASE_URL_LOGIN = 'https://rest.deoxysworkshop.com/api';
 
 
 const client_id = '4944b484-2be6-11ee-be56-0242ac120002-client';
