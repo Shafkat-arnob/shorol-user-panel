@@ -4,7 +4,6 @@ import { StaticImageData } from "next/image";
 import Link from "next/link";
 import { FC } from "react";
 
-
 export interface CardCategory2Props {
   className?: string;
   ratioClass?: string;
@@ -12,7 +11,7 @@ export interface CardCategory2Props {
   featuredImage?: string | StaticImageData;
   name: string;
   desc: string;
-  id: number;
+  id?: number;
 }
 
 const CardCategory2: FC<CardCategory2Props> = ({
@@ -20,13 +19,16 @@ const CardCategory2: FC<CardCategory2Props> = ({
   ratioClass = "aspect-w-1 aspect-h-1",
   bgClass = "bg-orange-50",
   featuredImage = "N2ZOD2945Z41CM6JAVTX6F70PDZ5G4EAU98V9ABF23YR8RXPNRMYTSRPX6M192YA5BQL0N5O9PBTVJP9X3CWUA5HBNYEBNPGP94Vpc_ver_1.png",
-  name="",
-  desc="",
-  id=null,
+  name = "",
+  desc = "",
+  id = null,
 }) => {
   return (
     <Link
-      href={{pathname:"/collection",query:{categoryName:name,categoryId:id}}}
+      href={{
+        pathname: "/collection",
+        query: { categoryName: name, categoryId: id },
+      }}
       className={`nc-CardCategory2 ${className}`}
       data-nc-id="CardCategory2"
     >
