@@ -11,10 +11,8 @@ import Link from "next/link";
 import { Fragment, useEffect, useState } from "react";
 
 export default function CartDropdown() {
-  const cartListString = sessionStorage.getItem("cartList");
-  const [cartList, setCartList] = useState(
-    cartListString ? JSON.parse(cartListString) : []
-  );
+  let cartListString;
+  const [cartList, setCartList] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
 
   console.log(cartList);
@@ -32,6 +30,13 @@ export default function CartDropdown() {
   useEffect(() => {
     calculateTotal();
   }, [cartList]);
+
+  useEffect(() => {
+    if (typeof window != undefined) {
+      cartListString = window?.sessionStorage.getItem("cartList");
+      setCartList(cartListString ? JSON.parse(cartListString) : []);
+    }
+  }, []);
 
   const renderProduct = (item: Product, index: number, close: () => void) => {
     const { image, price, name, variantActive } = item;

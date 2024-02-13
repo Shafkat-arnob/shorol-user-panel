@@ -20,7 +20,7 @@ export const getImageUrl = (url)=> {
   return `${IMAGE_PREFIX}/${url}`;
 }
 
-//const access_token_header = sessionStorage.getItem('access_token');
+//const access_token_header = window?.sessionStorage.getItem('access_token');
 
 const instance = axios.create({
   baseURL: BASE_URL,
@@ -33,17 +33,17 @@ const refreshAuthLogic = failedRequest =>
         grant_type: 'refresh_token',
         client_id,
         client_secret,
-        refresh_token: sessionStorage.getItem('refresh_token'),
+        refresh_token: window?.sessionStorage.getItem('refresh_token'),
       },
     })
     .then(tokenRefreshResponse => {
       failedRequest.response.config.params['access_token'] =
         tokenRefreshResponse.data.access_token;
-      sessionStorage.setItem(
+      window?.sessionStorage.setItem(
         'access_token',
         tokenRefreshResponse.data.access_token
       );
-      sessionStorage.setItem(
+      window?.sessionStorage.setItem(
         'refresh_token',
         tokenRefreshResponse.data.refresh_token
       );
@@ -68,11 +68,11 @@ export const login = async data => {
 
 
 
-//Axios.defaults.headers.common = {'Authorization': `Bearer ${sessionStorage.getItem("access_token")}`}
+//Axios.defaults.headers.common = {'Authorization': `Bearer ${window?.sessionStorage.getItem("access_token")}`}
 
 export const fileUpload = async (file) => {
 
-  const access_token = sessionStorage.getItem('access_token');
+  const access_token = window?.sessionStorage.getItem('access_token');
   console.log("file------->",file);
   const fd = new FormData();
   fd.append('file', file);
@@ -86,7 +86,7 @@ export const fileUpload = async (file) => {
 //roles APi
 
 export const getAllRole = async () => {
-  const access_token = sessionStorage.getItem('access_token');
+  const access_token = window?.sessionStorage.getItem('access_token');
 
   return await instance.get(`/admin/users/role/list`, {
     params: { access_token, client_id, client_secret },
@@ -94,7 +94,7 @@ export const getAllRole = async () => {
 };
 
 export const getRoles = async () => {
-  const access_token = sessionStorage.getItem('access_token');
+  const access_token = window?.sessionStorage.getItem('access_token');
 
   return await instance.get(`/admin/users/role/list`, {
     params: { access_token, client_id, client_secret },
@@ -104,26 +104,26 @@ export const getRoles = async () => {
 
 // Users 
 export const createUser = async data => {
-  const access_token = sessionStorage.getItem('access_token');
+  const access_token = window?.sessionStorage.getItem('access_token');
   return await instance.post('/admin/users', data, {
     params: { access_token, client_id, client_secret },
   });
 };
 export const updateUser = async data => {
-  const access_token = sessionStorage.getItem('access_token');
+  const access_token = window?.sessionStorage.getItem('access_token');
   return await instance.put('/admin/users/'+data.slug, data, {
     params: { access_token, client_id, client_secret },
   });
 };
 export const deleteUser = async slug => {
-  const access_token = sessionStorage.getItem('access_token');
+  const access_token = window?.sessionStorage.getItem('access_token');
   return await instance.delete('/admin/users/'+slug,  {
     params: { access_token, client_id, client_secret },
   });
 };
 
 export const getAllUsersByRole = async (roleId) => {
-  const access_token = sessionStorage.getItem('access_token');
+  const access_token = window?.sessionStorage.getItem('access_token');
 
   return await instance.get(`/admin/users/role/`+roleId, {
     params: { access_token, client_id, client_secret },
@@ -137,7 +137,7 @@ export const getAllUsersByRole = async (roleId) => {
 
 
 export const createCategory = async data => {
-  const access_token = sessionStorage.getItem('access_token');
+  const access_token = window?.sessionStorage.getItem('access_token');
   
   return await instance.post('/admin/category', data, {
     params: { access_token, client_id, client_secret },
@@ -145,7 +145,7 @@ export const createCategory = async data => {
 };
 
 export const getAllCategoryList = async () => {
-  const access_token = sessionStorage.getItem('access_token');
+  const access_token = window?.sessionStorage.getItem('access_token');
 
   return await instance.get(`/admin/category/get/all/`, {
     params: { access_token, client_id, client_secret },
@@ -160,7 +160,7 @@ export const getCategoryListByParentId = async (params) => {
 };
 
 export const createColor = async data => {
-  const access_token = sessionStorage.getItem('access_token');
+  const access_token = window?.sessionStorage.getItem('access_token');
   
   return await instance.post('/admin/color', data, {
     params: { access_token, client_id, client_secret },
@@ -168,7 +168,7 @@ export const createColor = async data => {
 };
 
 export const getAllColorList = async () => {
-  const access_token = sessionStorage.getItem('access_token');
+  const access_token = window?.sessionStorage.getItem('access_token');
 
   return await instance.get(`/admin/color`, {
     params: { access_token, client_id, client_secret },
@@ -176,7 +176,7 @@ export const getAllColorList = async () => {
 };
 
 export const createSize = async data => {
-  const access_token = sessionStorage.getItem('access_token');
+  const access_token = window?.sessionStorage.getItem('access_token');
   
   return await instance.post('/admin/size', data, {
     params: { access_token, client_id, client_secret },
@@ -184,7 +184,7 @@ export const createSize = async data => {
 };
 
 export const getAllSizeList = async () => {
-  const access_token = sessionStorage.getItem('access_token');
+  const access_token = window?.sessionStorage.getItem('access_token');
 
   return await instance.get(`/admin/size`, {
     params: { access_token, client_id, client_secret },
@@ -192,7 +192,7 @@ export const getAllSizeList = async () => {
 };
 
 export const createBrand = async data => {
-  const access_token = sessionStorage.getItem('access_token');
+  const access_token = window?.sessionStorage.getItem('access_token');
   
   return await instance.post('/admin/brand', data, {
     params: { access_token, client_id, client_secret },
@@ -200,7 +200,7 @@ export const createBrand = async data => {
 };
 
 export const getAllBrandList = async () => {
-  const access_token = sessionStorage.getItem('access_token');
+  const access_token = window?.sessionStorage.getItem('access_token');
 
   return await instance.get(`/all/brand`, {
     params: { access_token, client_id, client_secret },
@@ -208,7 +208,7 @@ export const getAllBrandList = async () => {
 };
 
 export const getBrandListByCategoryId = async (params) => {
-  // const access_token = sessionStorage.getItem('access_token');
+  // const access_token = window?.sessionStorage.getItem('access_token');
 
   return await instance.get(`/all/brand/get/by/category`, {
     params: { ...params },
@@ -216,7 +216,7 @@ export const getBrandListByCategoryId = async (params) => {
 };
 
 export const createProduct = async data => {
-  const access_token = sessionStorage.getItem('access_token');
+  const access_token = window?.sessionStorage.getItem('access_token');
   
   return await instance.post('/admin/product', data, {
     params: { access_token, client_id, client_secret },
@@ -253,7 +253,7 @@ export const getNewArrivalProductList = async () => {
 };
 
 export const createSlider = async data => {
-  const access_token = sessionStorage.getItem('access_token');
+  const access_token = window?.sessionStorage.getItem('access_token');
   
   return await instance.post('/admin/slider-image', data, {
     params: { access_token, client_id, client_secret },
@@ -261,7 +261,7 @@ export const createSlider = async data => {
 };
 
 export const getAllSliderList = async () => {
-  const access_token = sessionStorage.getItem('access_token');
+  const access_token = window?.sessionStorage.getItem('access_token');
 
   return await instance.get(`/all/slider-image`, {
     params: { access_token, client_id, client_secret },

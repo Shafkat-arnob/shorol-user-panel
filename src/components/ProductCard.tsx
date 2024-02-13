@@ -2,7 +2,6 @@
 
 import { getImageUrl } from "@/app/api";
 import { Transition } from "@/app/headlessui";
-import { PRODUCTS } from "@/data/data";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
 import NcImage from "@/shared/NcImage/NcImage";
@@ -27,7 +26,7 @@ export interface ProductCardProps {
 
 const ProductCard: FC<ProductCardProps> = ({
   className = "",
-  data = PRODUCTS[0],
+  data = {},
   isLiked,
 }) => {
   const {
@@ -51,9 +50,9 @@ const ProductCard: FC<ProductCardProps> = ({
   const router = useRouter();
 
   const notifyAddTocart = ({ size }: { size?: string }) => {
-    const cartListString = sessionStorage.getItem("cartList");
+    const cartListString = window?.sessionStorage.getItem("cartList");
     const prevCartList = cartListString ? JSON.parse(cartListString) : [];
-    sessionStorage.setItem(
+    window?.sessionStorage.setItem(
       "cartList",
       JSON.stringify([...prevCartList, { ...data, variantActive, quantity: 1 }])
     );
@@ -83,7 +82,7 @@ const ProductCard: FC<ProductCardProps> = ({
         duration: 3000,
       }
     );
-    console.log(sessionStorage.getItem("cartList"));
+    console.log(window?.sessionStorage.getItem("cartList"));
   };
 
   const renderProductCartOnNotify = ({ size }: { size?: string }) => {

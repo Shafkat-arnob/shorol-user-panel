@@ -1,10 +1,10 @@
 import Prices from "@/components/Prices";
-import { PRODUCTS } from "@/data/data";
+import { Product } from "@/data/data";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
 import Image from "next/image";
 
 const AccountOrder = () => {
-  const renderProductItem = (product: any, index: number) => {
+  const renderProductItem = (product: Product, index: number) => {
     const { image, name } = product;
     return (
       <div key={index} className="flex py-4 sm:py-7 last:pb-0 first:pt-0">
@@ -75,7 +75,7 @@ const AccountOrder = () => {
           </div>
         </div>
         <div className="border-t border-slate-200 dark:border-slate-700 p-2 sm:p-8 divide-y divide-y-slate-200 dark:divide-slate-700">
-          {[PRODUCTS[0], PRODUCTS[1], PRODUCTS[2]].map(renderProductItem)}
+          {[].map(renderProductItem)}
         </div>
       </div>
     );

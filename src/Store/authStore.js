@@ -11,11 +11,11 @@ const useAuthStore = create ((set) => ({
         try {
             set((state)=>({loading:true}))
             var response = await Server.login(params);
-            sessionStorage.setItem("authenticated", true);
-            sessionStorage.setItem("access_token", response.data.access_token);
-            sessionStorage.setItem("refresh_token", response.data.refresh_token);
-            sessionStorage.setItem("userId", response.data.userId);
-            sessionStorage.setItem(
+            window?.sessionStorage.setItem("authenticated", true);
+            window?.sessionStorage.setItem("access_token", response.data.access_token);
+            window?.sessionStorage.setItem("refresh_token", response.data.refresh_token);
+            window?.sessionStorage.setItem("userId", response.data.userId);
+            window?.sessionStorage.setItem(
                 "role",
                 response.data?.authorities[0]?.authority
             );
@@ -33,10 +33,10 @@ const useAuthStore = create ((set) => ({
         }
     },
     logout : () => {
-        sessionStorage.removeItem("access_token");
-        sessionStorage.removeItem("refresh_token");
-        sessionStorage.removeItem("userId");
-        sessionStorage.setItem("authenticated", false);
+        window?.sessionStorage.removeItem("access_token");
+        window?.sessionStorage.removeItem("refresh_token");
+        window?.sessionStorage.removeItem("userId");
+        window?.sessionStorage.setItem("authenticated", false);
         set((state)=>({
             authenticated: false,
         }))

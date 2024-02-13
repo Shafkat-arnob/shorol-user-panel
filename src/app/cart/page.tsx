@@ -10,10 +10,8 @@ import { useEffect, useState } from "react";
 import { getImageUrl } from "../api";
 
 const CartPage = () => {
-  const cartListString = sessionStorage.getItem("cartList");
-  const [cartList, setCartList] = useState(
-    cartListString ? JSON.parse(cartListString) : []
-  );
+  let cartListString;
+  const [cartList, setCartList] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
   const [deliveryFee, setDeliveryFee] = useState(60);
 
@@ -32,6 +30,13 @@ const CartPage = () => {
   useEffect(() => {
     calculateTotal();
   }, [cartList]);
+
+  useEffect(() => {
+    if (typeof window != undefined) {
+      cartListString = window?.sessionStorage.getItem("cartList");
+      setCartList(cartListString ? JSON.parse(cartListString) : []);
+    }
+  }, []);
 
   const renderStatusSoldout = () => {
     return (
@@ -189,7 +194,7 @@ const CartPage = () => {
               <div className="hidden sm:block text-center relative">
                 <NcInputNumber
                   className="relative z-10"
-                  max={chosenVariant.numberOfProducts}
+                  max={chosenVariant.numberOfProducts || 1}
                   onChange={(e) => {
                     item.quantity = e;
                     calculateTotal();

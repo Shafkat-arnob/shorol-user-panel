@@ -21,7 +21,7 @@ export interface Product {
   id: number;
   name: string;
   price: number;
-  image: StaticImageData | string;
+  image: StaticImageData | string | any;
   description: string;
   category: string;
   tags: string[];
