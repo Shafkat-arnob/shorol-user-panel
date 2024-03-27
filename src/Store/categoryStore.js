@@ -28,13 +28,13 @@ const useCategoryStore = create ((set) => ({
 
             if(parentId==RootCategoryId) {
             set((state)=>({
-                list: response.data,
+                list: response,
                 loading: false,
             }));
             }
             else {
                 set((state)=>({
-                    subCategoryList: response.data,
+                    subCategoryList: response,
                     loading: false,
                 }));
             }

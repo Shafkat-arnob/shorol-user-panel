@@ -1,11 +1,11 @@
 "use client";
 
 import { Popover, Transition } from "@/app/headlessui";
-import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import CardCategory3 from "@/components/CardCategories/CardCategory3";
-import React, { FC, Fragment, useState } from "react";
 import { Route } from "@/routers/types";
+import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
+import { FC, Fragment, useState } from "react";
 
 export interface NavItemType {
   id: string;
@@ -15,6 +15,7 @@ export interface NavItemType {
   children?: NavItemType[];
   type?: "dropdown" | "megaMenu" | "none";
   isNew?: boolean;
+  query?: {};
 }
 
 export interface NavigationItemProps {
@@ -214,8 +215,13 @@ const NavigationItem: FC<NavigationItemProps> = ({ menuItem }) => {
       <div className="h-20 flex-shrink-0 flex items-center">
         <Link
           className="inline-flex items-center text-sm lg:text-[15px] font-medium text-slate-700 dark:text-slate-300 py-2.5 px-4 xl:px-5 rounded-full hover:text-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+          // href={{
+          //   pathname: item.href || undefined,
+          //   query: {...item.query},
+          // }}
           href={{
-            pathname: item.href || undefined,
+            pathname: item.href,
+            ...(item.query && { query: { ...item.query } }),
           }}
         >
           {item.name}

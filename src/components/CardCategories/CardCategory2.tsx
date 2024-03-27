@@ -1,3 +1,5 @@
+"use client";
+
 import { IMAGE_PREFIX } from "@/app/api";
 import NcImage from "@/shared/NcImage/NcImage";
 import { StaticImageData } from "next/image";

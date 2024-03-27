@@ -4,11 +4,7 @@ import useCategoryStore from "@/Store/categoryStore";
 import useColorStore from "@/Store/colorStore";
 import useProductStore from "@/Store/productStore";
 import ProductCard from "@/components/ProductCard";
-import SectionPromo1 from "@/components/SectionPromo1";
-import SectionSliderCollections from "@/components/SectionSliderLargeProduct";
 import TabFilters from "@/components/TabFilters";
-import ButtonPrimary from "@/shared/Button/ButtonPrimary";
-import Pagination from "@/shared/Pagination/Pagination";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
@@ -35,11 +31,11 @@ const PageCollection = ({}) => {
     //getAllList();
     getListByParentId(id);
     getAllColorList();
-  }, []);
+  }, [name, id]);
 
   useEffect(() => {
     getProductByFilters({
-      categoryName: subCategoryList.map((item: any) => item.name).join(","),
+      categoryName: subCategoryList?.map((item: any) => item.name).join(","),
       colorName: "",
     });
   }, [subCategoryList]);
@@ -54,8 +50,7 @@ const PageCollection = ({}) => {
               {name}
             </h2>
             <span className="block mt-4 text-neutral-500 dark:text-neutral-400 text-sm sm:text-base">
-              We not only help you design exceptional products, but also make it
-              easy for you to share your designs with more like-minded people.
+              {}
             </span>
           </div>
 
@@ -79,8 +74,8 @@ const PageCollection = ({}) => {
 
             {/* PAGINATION */}
             <div className="flex flex-col mt-12 lg:mt-16 space-y-5 sm:space-y-0 sm:space-x-3 sm:flex-row sm:justify-between sm:items-center">
-              <Pagination />
-              <ButtonPrimary loading>Show me more</ButtonPrimary>
+              {/* <Pagination /> */}
+              {/* <ButtonPrimary>Show me more</ButtonPrimary> */}
             </div>
           </main>
         </div>
@@ -88,11 +83,11 @@ const PageCollection = ({}) => {
         {/* === SECTION 5 === */}
         <hr className="border-slate-200 dark:border-slate-700" />
 
-        <SectionSliderCollections />
+        {/* <SectionSliderCollections /> */}
         <hr className="border-slate-200 dark:border-slate-700" />
 
         {/* SUBCRIBES */}
-        <SectionPromo1 />
+        {/* <SectionPromo1 /> */}
       </div>
     </div>
   );

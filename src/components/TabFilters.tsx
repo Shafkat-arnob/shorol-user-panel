@@ -232,7 +232,7 @@ const TabFilters = (props: any) => {
                       label="All Categories"
                       defaultChecked={
                         categoriesState.toString() ===
-                        subCategoryList.map((item) => item.name).toString()
+                        subCategoryList?.map((item) => item.name).toString()
                       }
                       onChange={(checked) =>
                         subCategoryList.forEach((item) =>
@@ -241,7 +241,7 @@ const TabFilters = (props: any) => {
                       }
                     />
                     <div className="w-full border-b border-neutral-200 dark:border-neutral-700" />
-                    {subCategoryList.map((item: any) => (
+                    {subCategoryList?.map((item: any) => (
                       <div key={item.id} className="">
                         <Checkbox
                           name={item.name}
@@ -998,7 +998,8 @@ const TabFilters = (props: any) => {
                       <div className="py-7">
                         <h3 className="text-xl font-medium">Categories</h3>
                         <div className="mt-6 relative ">
-                          {renderMoreFilterItem(DATA_categories)}
+                          {/* {renderMoreFilterItem(DATA_categories)} */}
+                          {renderTabsCategories()}
                         </div>
                       </div>
                       {/* --------- */}
@@ -1006,7 +1007,8 @@ const TabFilters = (props: any) => {
                       <div className="py-7">
                         <h3 className="text-xl font-medium">Colors</h3>
                         <div className="mt-6 relative ">
-                          {renderMoreFilterItem(DATA_colors)}
+                          {/* {renderMoreFilterItem(DATA_colors)} */}
+                          {renderTabsColor()}
                         </div>
                       </div>
                       {/* --------- */}
@@ -1020,7 +1022,7 @@ const TabFilters = (props: any) => {
 
                       {/* --------- */}
                       {/* ---- */}
-                      <div className="py-7">
+                      {/* <div className="py-7">
                         <h3 className="text-xl font-medium">Range Prices</h3>
                         <div className="mt-6 relative ">
                           <div className="relative flex flex-col space-y-8">
@@ -1088,7 +1090,7 @@ const TabFilters = (props: any) => {
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </div> */}
 
                       {/* --------- */}
                       {/* ---- */}
@@ -1127,7 +1129,7 @@ const TabFilters = (props: any) => {
                   </div>
 
                   <div className="p-6 flex-shrink-0 bg-neutral-50 dark:bg-neutral-900 dark:border-t dark:border-neutral-800 flex items-center justify-between">
-                    <ButtonThird
+                    {/* <ButtonThird
                       onClick={() => {
                         setRangePrices(PRICE_RANGE);
                         setCategoriesState([]);
@@ -1138,13 +1140,13 @@ const TabFilters = (props: any) => {
                       sizeClass="px-4 py-2 sm:px-5"
                     >
                       Clear
-                    </ButtonThird>
-                    <ButtonPrimary
+                    </ButtonThird> */}
+                    {/* <ButtonPrimary
                       onClick={closeModalMoreFilter}
                       sizeClass="px-4 py-2 sm:px-5"
                     >
                       Apply
-                    </ButtonPrimary>
+                    </ButtonPrimary> */}
                   </div>
                 </div>
               </Transition.Child>
@@ -1159,7 +1161,7 @@ const TabFilters = (props: any) => {
     <div className="flex lg:space-x-4">
       {/* FOR DESKTOP */}
       <div className="hidden lg:flex flex-1 space-x-4">
-        {renderTabsPriceRage()}
+        {/* {renderTabsPriceRage()} */}
         {renderTabsCategories()}
         {renderTabsColor()}
         {/* {renderTabsSize()}

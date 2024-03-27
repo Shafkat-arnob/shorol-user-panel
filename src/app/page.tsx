@@ -1,10 +1,6 @@
 import { RootCategoryId } from "@/Constant";
-import BackgroundSection from "@/components/BackgroundSection/BackgroundSection";
-import SectionGridMoreExplore from "@/components/SectionGridMoreExplore/SectionGridMoreExplore";
 import SectionHero2 from "@/components/SectionHero/SectionHero2";
 import SectionHowItWork from "@/components/SectionHowItWork/SectionHowItWork";
-import SectionPromo2 from "@/components/SectionPromo2";
-import SectionSliderCategories from "@/components/SectionSliderCategories/SectionSliderCategories";
 import SectionSliderProductCard from "@/components/SectionSliderProductCard";
 import {
   getAllProductList,
@@ -59,7 +55,7 @@ async function PageHome() {
       </div> */}
 
       <div className="container relative space-y-24 my-24 lg:space-y-32 lg:my-32">
-        <SectionSliderCategories categoryList={categoryList} />
+        {/* <SectionSliderCategories /> */}
 
         {newArrivalList && <SectionSliderProductCard data={newArrivalList} />}
 
@@ -69,17 +65,17 @@ async function PageHome() {
 
         {/* <SectionPromo1 /> */}
 
-        <div className="relative py-24 lg:py-32">
+        {/* <div className="relative py-24 lg:py-32">
           <BackgroundSection />
           <SectionGridMoreExplore />
-        </div>
+        </div> */}
 
         {/* <SectionSliderProductCard
           heading="Best Sellers"
           subHeading="Best selling of the month"
         /> */}
 
-        <SectionPromo2 />
+        {/* <SectionPromo2 /> */}
 
         <div className="py-24 lg:py-32 border-t border-b border-slate-200 dark:border-slate-700">
           <SectionHowItWork />

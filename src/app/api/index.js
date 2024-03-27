@@ -154,9 +154,10 @@ export const getAllCategoryList = async () => {
 
 export const getCategoryListByParentId = async (params) => {
 
-  return await instance.get(`/all/category/get/all/sub-category/by/category-id`, {
+  const res = await instance.get(`/all/category/get/all/sub-category/by/category-id`, {
     params: {...params },
   });
+  return res.data;
 };
 
 export const createColor = async data => {

@@ -8,7 +8,6 @@ import LikeSaveBtns from "@/components/LikeSaveBtns";
 import NcInputNumber from "@/components/NcInputNumber";
 import NotifyAddTocart from "@/components/NotifyAddTocart";
 import ReviewItem from "@/components/ReviewItem";
-import SectionSliderProductCard from "@/components/SectionSliderProductCard";
 import ListingImageGallery from "@/components/listing-image-gallery/ListingImageGallery";
 import detail21JPG from "@/images/products/detail3-1.webp";
 import detail22JPG from "@/images/products/detail3-2.webp";
@@ -16,7 +15,6 @@ import detail23JPG from "@/images/products/detail3-3.webp";
 import detail24JPG from "@/images/products/detail3-4.webp";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
-import NcImage from "@/shared/NcImage/NcImage";
 import {
   ClockIcon,
   NoSymbolIcon,
@@ -24,13 +22,12 @@ import {
 } from "@heroicons/react/24/outline";
 import { StarIcon } from "@heroicons/react/24/solid";
 import { Route } from "next";
-import { StaticImageData } from "next/image";
+import Image, { StaticImageData } from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import CustomDataTable from "../../shared/CustomDataTable/CustomDataTable";
 import { IMAGE_PREFIX } from "../api";
-import ModalViewAllReviews from "../product-detail/ModalViewAllReviews";
-import Policy from "../product-detail/Policy";
 
 const LIST_IMAGES_GALLERY_DEMO: (string | StaticImageData)[] = [
   detail21JPG,
@@ -64,6 +61,7 @@ const ProductDetailPage2 = (props: any) => {
     description,
     inventoryInfos,
     mainImage,
+    specifications,
   } = selectedProduct;
   //
   const router = useRouter();
@@ -84,6 +82,17 @@ const ProductDetailPage2 = (props: any) => {
   useEffect(() => {
     productId && getSelectedProduct(productId);
   }, [productId]);
+
+  const columns = [
+    {
+      name: "Name",
+      selector: (row: any, index: number) => row.name,
+    },
+    {
+      name: "Description",
+      selector: (row: any, index: number) => row.description,
+    },
+  ];
 
   //
   const handleCloseModalImageGallery = () => {
@@ -250,7 +259,7 @@ const ProductDetailPage2 = (props: any) => {
             <div className="flex items-center justify-between space-x-5">
               <div className="flex text-2xl font-semibold">${price}</div>
 
-              <a
+              {/* <a
                 href="#reviews"
                 className="flex items-center text-sm font-medium"
               >
@@ -264,7 +273,7 @@ const ProductDetailPage2 = (props: any) => {
                     142 reviews
                   </span>
                 </span>
-              </a>
+              </a> */}
             </div>
 
             {/* ---------- 3 VARIANTS AND SIZE LIST ----------  */}
@@ -363,15 +372,15 @@ const ProductDetailPage2 = (props: any) => {
   const renderSection2 = () => {
     return (
       <div className="listingSection__wrap !border-b-0 !pb-0">
-        <h2 className="text-2xl font-semibold">Product details</h2>
+        <h2 className="text-2xl font-semibold">Specifications</h2>
         {/* <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div> */}
         <div className="prose prose-sm sm:prose dark:prose-invert sm:max-w-4xl">
-          <p>
-            The patented eighteen-inch hardwood Arrowhead deck --- finely
-            mortised in, makes this the strongest and most rigid canoe ever
-            built. You cannot buy a canoe that will afford greater satisfaction.
-          </p>
-          <p>
+          <div>
+            <CustomDataTable data={specifications} columns={columns} />
+          </div>
+          <h2 className="text-2xl font-semibold">Product Description</h2>
+          <p>{description}</p>
+          {/* <p>
             The St. Louis Meramec Canoe Company was founded by Alfred Wickett in
             1922. Wickett had previously worked for the Old Town Canoe Co from
             1900 to 1914. Manufacturing of the classic wooden canoes in Valley
@@ -385,10 +394,10 @@ const ProductDetailPage2 = (props: any) => {
               GOTS certified
             </li>
             <li>Soft touch water based printed in the USA</li>
-          </ul>
+          </ul> */}
         </div>
         {/* ---------- 6 ----------  */}
-        <Policy />
+        {/* <Policy /> */}
       </div>
     );
   };
@@ -452,7 +461,7 @@ const ProductDetailPage2 = (props: any) => {
         <header className="container mt-8 sm:mt-10">
           <div className="relative ">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 lg:gap-6">
-              <div
+              {/* <div
                 className="md:h-full col-span-2 md:col-span-1 row-span-2 relative rounded-md sm:rounded-xl cursor-pointer"
                 onClick={handleOpenModalImageGallery}
               >
@@ -470,10 +479,26 @@ const ProductDetailPage2 = (props: any) => {
                   priority
                 />
                 <div className="absolute inset-0 bg-neutral-900/20 opacity-0 hover:opacity-40 transition-opacity rounded-md sm:rounded-xl"></div>
+              </div> */}
+
+              <div className="relative">
+                <div className="aspect-w-16 aspect-h-16 relative">
+                  <Image
+                    fill
+                    sizes="(max-width: 640px) 100vw, 33vw"
+                    src={`${IMAGE_PREFIX}/${
+                      inventoryInfos?.length
+                        ? inventoryInfos[variantActive].image?.url
+                        : mainImage?.url
+                    }`}
+                    className="w-full rounded-2xl object-cover"
+                    alt="product detail 1"
+                  />
+                </div>
               </div>
 
               {/*  */}
-              <div
+              {/* <div
                 className="col-span-1 row-span-2 relative rounded-md sm:rounded-xl overflow-hidden z-0 cursor-pointer"
                 onClick={handleOpenModalImageGallery}
               >
@@ -486,10 +511,10 @@ const ProductDetailPage2 = (props: any) => {
                   src={LIST_IMAGES_GALLERY_DEMO[1]}
                 />
                 <div className="absolute inset-0 bg-neutral-900/20 opacity-0 hover:opacity-40 transition-opacity"></div>
-              </div>
+              </div> */}
 
               {/*  */}
-              {[LIST_IMAGES_GALLERY_DEMO[2], LIST_IMAGES_GALLERY_DEMO[3]].map(
+              {/* {[LIST_IMAGES_GALLERY_DEMO[2], LIST_IMAGES_GALLERY_DEMO[3]].map(
                 (item, index) => (
                   <div
                     key={index}
@@ -505,17 +530,17 @@ const ProductDetailPage2 = (props: any) => {
                       className="object-cover w-full h-full rounded-md sm:rounded-xl "
                       src={item || ""}
                     />
-
-                    {/* OVERLAY */}
                     <div
                       className="absolute inset-0 bg-slate-900/20 opacity-0 hover:opacity-60 transition-opacity cursor-pointer"
                       onClick={handleOpenModalImageGallery}
                     />
                   </div>
                 )
-              )}
+              )} */}
             </div>
-            <div
+
+            {/* Show More Sect */}
+            {/* <div
               className="absolute hidden md:flex md:items-center md:justify-center left-3 bottom-3 px-4 py-2 rounded-xl bg-white text-slate-500 cursor-pointer hover:bg-slate-200 z-10"
               onClick={handleOpenModalImageGallery}
             >
@@ -536,7 +561,7 @@ const ProductDetailPage2 = (props: any) => {
               <span className="ml-2 text-neutral-800 text-sm font-medium">
                 Show all photos
               </span>
-            </div>
+            </div> */}
           </div>
         </header>
       </>
@@ -545,7 +570,7 @@ const ProductDetailPage2 = (props: any) => {
       <main className="container relative z-10 mt-9 sm:mt-11 flex ">
         {/* CONTENT */}
         <div className="w-full lg:w-3/5 xl:w-2/3 space-y-10 lg:pr-14 lg:space-y-14">
-          {renderSection1()}
+          {/* {renderSection1()} */}
           {renderSection2()}
         </div>
 
@@ -558,7 +583,7 @@ const ProductDetailPage2 = (props: any) => {
       </main>
 
       {/* OTHER SECTION */}
-      <div className="container pb-24 lg:pb-28 pt-14 space-y-14">
+      {/* <div className="container pb-24 lg:pb-28 pt-14 space-y-14">
         <hr className="border-slate-200 dark:border-slate-700" />
 
         {renderReviews()}
@@ -571,13 +596,13 @@ const ProductDetailPage2 = (props: any) => {
           headingFontClassName="text-2xl font-semibold"
           headingClassName="mb-10 text-neutral-900 dark:text-neutral-50"
         />
-      </div>
+      </div> */}
 
       {/* MODAL VIEW ALL REVIEW */}
-      <ModalViewAllReviews
+      {/* <ModalViewAllReviews
         show={isOpenModalViewAllReviews}
         onCloseModalViewAllReviews={() => setIsOpenModalViewAllReviews(false)}
-      />
+      /> */}
 
       <ListingImageGallery
         isShowModal={modal === "PHOTO_TOUR_SCROLLABLE"}

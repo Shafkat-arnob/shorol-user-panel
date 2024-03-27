@@ -1,15 +1,16 @@
-import { showSweetAlert } from "@/lib/swal";
 import { useQuery } from "react-query";
+import Swal from "sweetalert2";
 
 const useCustomQuery = ({ queryKey = [], queryFn = () => {}, rest = {} }) => {
   //const [fetchedData,setFetchedData] = useState();
 
   const { data, isLoading, refetch, isError } = useQuery(queryKey, queryFn, {
     onSuccess: (response) => {
-      console.log(response.data);
+      console.log("called");
+      console.log(response);
     },
     onError: (error) => {
-      showSweetAlert({
+      Swal.fire({
         icon: "error",
         title: "Error!",
         text: error.message,
